@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VEGA STORE | Sneakers & Streetwear Premium</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #000000; }
+    .hide { display: none !important; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .view-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .product-card-vega { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .product-card-vega:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+    .size-btn-vega.selected { background-color: #000000 !important; color: #ffffff !important; border-color: #000000 !important; }
+    .size-btn-vega:disabled { opacity: 0.20; cursor: not-allowed; text-decoration: line-through; }
+    .tab-pay.active { border-bottom-width: 2px; border-color: #000000; font-weight: 700; color: #000000; }
+    /* QR panels */
+    #qr-yape-img, #qr-plin-img { image-rendering: pixelated; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased bg-white selection:bg-zinc-900 selection:text-white">
+
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-zinc-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+      <a href="#" onclick="showView('home')" class="text-2xl font-black tracking-[0.25em] text-black uppercase">
+        VEGA<span class="font-light text-zinc-400">STORE</span>
+      </a>
+      <nav class="hidden md:flex space-x-10 text-xs font-bold tracking-widest uppercase text-zinc-500">
+        <a href="#" onclick="showCatalog('nike')" class="hover:text-black transition-colors">NIKE</a>
+        <a href="#" onclick="showCatalog('jordan')" class="hover:text-black transition-colors">JORDAN</a>
+        <a href="#" onclick="showCatalog('luxury')" class="hover:text-black transition-colors">LUXURY</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <button onclick="showView('checkout')" class="relative p-2.5 text-black hover:text-zinc-500 transition group">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+          <!-- FIX: clases Tailwind válidas para el badge -->
+          <span id="cart-count" class="absolute top-1 right-1 bg-black text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center hide">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- WhatsApp flotante vinculado al número real -->
+  <a href="https://wa.me/51988164963" target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20ba5a] text-white p-4 rounded-full shadow-xl transition-all hover:scale-110">
+    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <main class="flex-grow">
+
+    <!-- HOME -->
+    <section id="view-home" class="view-transition">
+      <div class="relative bg-zinc-950 h-[75vh] flex items-center justify-center overflow-hidden">
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-40 scale-105 pointer-events-none">
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-running-shoes-in-a-sport-store-flat-lay-42566-large.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
+        <div class="relative z-10 text-center px-4 max-w-3xl mx-auto">
+          <p class="text-white font-bold tracking-[0.5em] text-[10px] sm:text-xs uppercase mb-4 drop-shadow-md">Premium Sneakers Culture</p>
+          <h2 class="text-4xl sm:text-7xl font-black text-white uppercase tracking-tight mb-8 drop-shadow-xl leading-none">
+            SNEAKER ELITE<br><span class="font-light text-zinc-300">COUTURE</span>
+          </h2>
+          <button onclick="document.getElementById('brands-anchor').scrollIntoView({behavior:'smooth'})" class="bg-white text-black font-bold tracking-widest text-xs uppercase px-10 py-4 hover:bg-black hover:text-white transition-all duration-300 shadow-lg">
+            COMPRAR AHORA
+          </button>
+        </div>
+      </div>
+
+      <div id="brands-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+        <div class="flex flex-col sm:flex-row justify-between items-baseline mb-12 border-b border-zinc-100 pb-5">
+          <h3 class="text-xl font-black tracking-widest uppercase">CULTURA SNEAKER CO</h3>
+          <p class="text-zinc-400 text-xs tracking-wider uppercase mt-1 sm:mt-0">Modelos Exclusivos Verificados</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div onclick="showCatalog('nike')" class="relative h-[420px] group overflow-hidden bg-zinc-100 cursor-pointer shadow-sm">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-95" alt="Nike">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+            <div class="absolute bottom-8 left-8 text-white">
+              <h4 class="text-2xl font-black tracking-wider uppercase">NIKE SELECTION</h4>
+              <p class="text-xs font-semibold tracking-wide text-zinc-300 mt-1.5 flex items-center gap-1">Explorar Catálogo <span class="group-hover:translate-x-1 transition-transform">→</span></p>
+            </div>
+          </div>
+          <div onclick="showCatalog('jordan')" class="relative h-[420px] group overflow-hidden bg-zinc-100 cursor-pointer shadow-sm">
+            <img src="https://images.unsplash.com/photo-1584735175315-9d5df23860e6?w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-95" alt="Jordan">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+            <div class="absolute bottom-8 left-8 text-white">
+              <h4 class="text-2xl font-black tracking-wider uppercase">AIR JORDAN</h4>
+              <p class="text-xs font-semibold tracking-wide text-zinc-300 mt-1.5 flex items-center gap-1">Explorar Catálogo <span class="group-hover:translate-x-1 transition-transform">→</span></p>
+            </div>
+          </div>
+          <div onclick="showCatalog('luxury')" class="relative h-[420px] group overflow-hidden bg-zinc-100 cursor-pointer shadow-sm">
+            <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-95" alt="Luxury">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+            <div class="absolute bottom-8 left-8 text-white">
+              <h4 class="text-2xl font-black tracking-wider uppercase">LUXURY EDITIONS</h4>
+              <p class="text-xs font-semibold tracking-wide text-zinc-300 mt-1.5 flex items-center gap-1">Explorar Catálogo <span class="group-hover:translate-x-1 transition-transform">→</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATALOG -->
+    <section id="view-catalog" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 hide view-transition">
+      <div class="flex items-center justify-between mb-10">
+        <div>
+          <button onclick="showView('home')" class="text-xs font-bold tracking-widest text-zinc-400 hover:text-black transition-colors uppercase flex items-center gap-2 mb-3">← Volver al Inicio</button>
+          <h2 id="catalog-title" class="text-3xl font-black tracking-wider uppercase text-black">CATÁLOGO</h2>
+        </div>
+        <span id="product-count" class="text-xs font-bold tracking-wider text-zinc-400 uppercase bg-zinc-50 px-4 py-2 border border-zinc-100 rounded-full">0 Modelos</span>
+      </div>
+      <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+
+    <!-- DETAIL -->
+    <section id="view-detail" class="max-w-6xl mx-auto px-4 sm:px-6 py-14 hide view-transition">
+      <button onclick="showCatalog(currentBrand)" class="text-xs font-bold tracking-widest text-zinc-400 hover:text-black transition-colors uppercase mb-10 flex items-center gap-2">← Regresar al catálogo</button>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+        <div class="bg-zinc-50 border border-zinc-100 p-10 flex items-center justify-center aspect-square relative shadow-sm">
+          <div id="detail-badge-limited" class="absolute top-5 left-5 bg-black text-white text-[9px] font-black tracking-widest uppercase px-3.5 py-2 shadow-sm hide">Edición Limitada</div>
+          <img id="detail-image" src="" alt="Sneaker" class="max-h-[90%] max-w-[90%] object-contain transition-transform duration-300 hover:scale-105">
+        </div>
+        <div class="flex flex-col justify-between py-2">
+          <div>
+            <p id="detail-brand" class="text-xs font-black text-zinc-400 uppercase tracking-widest mb-1.5"></p>
+            <h1 id="detail-name" class="text-3xl sm:text-4xl font-black text-black tracking-tight mb-5 uppercase leading-none"></h1>
+            <p id="detail-price" class="text-3xl font-black text-zinc-900 mb-6"></p>
+            <p class="text-zinc-500 text-sm leading-relaxed mb-8 border-l-2 border-zinc-900 pl-4">Par original importado bajo estrictos controles de autenticidad. Se despacha en su caja original con etiquetas oficiales de Vega Store.</p>
+            <div class="mb-10">
+              <label class="block text-xs font-black tracking-widest text-black mb-4 uppercase">Seleccionar Talla (US)</label>
+              <div id="size-grid" class="grid grid-cols-4 gap-3"></div>
+              <!-- FIX: warning visible solo cuando intentan añadir sin talla -->
+              <p id="size-warning" class="text-xs font-medium text-red-600 mt-3 hide">⚠️ Es obligatorio seleccionar una talla antes de continuar.</p>
+            </div>
+          </div>
+          <button id="add-to-cart-btn" onclick="addToCart()" class="w-full font-bold tracking-widest text-xs uppercase py-4 transition-all duration-300">
+            Selecciona tu talla
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section id="view-checkout" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 hide view-transition">
+      <h2 class="text-3xl font-black tracking-wider uppercase mb-12 text-black border-b border-zinc-100 pb-5">Orden de Compra</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+        <div class="lg:col-span-7 space-y-8">
+          <!-- Carrito -->
+          <div class="border border-zinc-200 p-6 sm:p-8 bg-white shadow-sm">
+            <h3 class="text-xs font-black tracking-widest uppercase mb-6 text-zinc-400">1. Artículos en el Carrito</h3>
+            <div id="cart-items" class="divide-y divide-zinc-100"></div>
+            <div id="cart-empty" class="text-center py-10 text-zinc-400 text-sm font-medium">El carrito está vacío actualmente.</div>
+          </div>
+
+          <!-- Datos de envío -->
+          <div class="border border-zinc-200 p-6 sm:p-8 bg-white shadow-sm space-y-5">
+            <h3 class="text-xs font-black tracking-widest uppercase mb-3 text-zinc-400">2. Datos de Envío Express</h3>
+            <div>
+              <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Nombre y Apellidos *</label>
+              <input type="text" id="customer-name" class="w-full border border-zinc-200 px-4 py-3 text-sm focus:border-black transition-colors focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Número de Contacto / WhatsApp *</label>
+              <input type="tel" id="customer-phone" placeholder="999999999" class="w-full border border-zinc-200 px-4 py-3 text-sm focus:border-black transition-colors focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Dirección de Destino Completa *</label>
+              <textarea id="customer-address" rows="2" placeholder="Calle, Departamento, Distrito, Referencias" class="w-full border border-zinc-200 px-4 py-3 text-sm focus:border-black transition-colors focus:outline-none resize-none"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 space-y-6">
+          <!-- Resumen -->
+          <div class="border border-zinc-200 p-6 sm:p-8 bg-white shadow-sm">
+            <h3 class="text-xs font-black tracking-widest uppercase mb-6 text-zinc-400">3. Resumen Financiero</h3>
+            <div class="space-y-4 text-sm border-b border-zinc-100 pb-5">
+              <div class="flex justify-between text-zinc-500 font-medium"><span>Subtotal Neto</span><span id="subtotal">S/. 0.00</span></div>
+              <div class="flex justify-between text-zinc-500 font-medium"><span>Costo de Envío</span><span class="text-green-600 font-black uppercase text-xs tracking-wider">Gratis</span></div>
+            </div>
+            <div class="flex justify-between items-center pt-5 font-black text-xl text-black tracking-tight">
+              <span>TOTAL GENERAL</span>
+              <span id="total">S/. 0.00</span>
+            </div>
+          </div>
+
+          <!-- Métodos de pago -->
+          <div class="border border-zinc-200 p-6 sm:p-8 bg-white shadow-sm">
+            <h3 class="text-xs font-black tracking-widest uppercase mb-5 text-zinc-400">4. Elegir Forma de Pago</h3>
+            <div class="flex border-b border-zinc-100 mb-5 text-xs font-bold tracking-wider text-zinc-400">
+              <button onclick="switchPaymentTab('transfer')" id="tab-transfer" class="tab-pay flex-1 pb-3 uppercase active">Transferencia</button>
+              <button onclick="switchPaymentTab('yape')" id="tab-yape" class="tab-pay flex-1 pb-3 uppercase">Yape</button>
+              <button onclick="switchPaymentTab('plin')" id="tab-plin" class="tab-pay flex-1 pb-3 uppercase">Plin</button>
+            </div>
+
+            <!-- Transferencia -->
+            <div id="payment-transfer" class="bg-zinc-50 p-4 border border-zinc-100 text-xs space-y-2">
+              <p class="font-bold text-zinc-900">BCP / BBVA / Interbank</p>
+              <p class="text-zinc-500 font-medium">Cuenta: <span class="font-mono font-bold text-black select-all">988-649-63</span></p>
+              <p class="text-zinc-500 font-medium">Titular: <span class="font-bold text-black">Vega Store Perú</span></p>
+            </div>
+
+            <!-- YAPE — QR dinámico con monto real -->
+            <div id="payment-yape" class="bg-zinc-50 p-5 border border-zinc-100 text-center hide">
+              <div class="flex items-center justify-center gap-2 mb-1">
+                <div class="w-7 h-7 rounded-full bg-purple-700 flex items-center justify-center text-white text-xs font-black">Y</div>
+                <p class="text-sm font-black text-zinc-900">Paga con Yape</p>
+              </div>
+              <p class="text-xs text-zinc-400 mb-3">Escanea el QR desde tu app Yape</p>
+              <!-- Pasos visuales -->
+              <div class="flex justify-center gap-2 mb-4">
+                <span class="bg-zinc-200 text-zinc-600 text-[10px] font-bold px-3 py-1 rounded-full">① Abre Yape</span>
+                <span class="bg-zinc-200 text-zinc-600 text-[10px] font-bold px-3 py-1 rounded-full">② Escanea QR</span>
+                <span class="bg-zinc-200 text-zinc-600 text-[10px] font-bold px-3 py-1 rounded-full">③ Confirma</span>
+              </div>
+              <p class="text-xl font-black text-purple-700 mb-4" id="yape-amount">S/. 0.00</p>
+              <div class="inline-block p-2 bg-white border border-zinc-200 shadow-sm mb-3">
+                <img id="qr-yape-img" src="" alt="QR Yape" class="w-40 h-40 mx-auto">
+              </div>
+              <p class="text-xs font-bold text-zinc-700">Número Yape: <span class="select-all text-purple-700">988 649 63</span></p>
+              <p class="text-[10px] text-zinc-400 mt-2 leading-relaxed">Tras pagar, envía el voucher por WhatsApp.<br>Tu pedido se procesa al verificar el pago.</p>
+            </div>
+
+            <!-- PLIN — QR dinámico con monto real -->
+            <div id="payment-plin" class="bg-zinc-50 p-5 border border-zinc-100 text-center hide">
+              <div class="flex items-center justify-center gap-2 mb-1">
+                <div class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-black">P</div>
+                <p class="text-sm font-black text-zinc-900">Paga con Plin</p>
+              </div>
+              <p class="text-xs text-zinc-400 mb-3">Escanea el QR desde tu app Plin</p>
+              <div class="flex justify-center gap-2 mb-4">
+                <span class="bg-zinc-200 text-zinc-600 text-[10px] font-bold px-3 py-1 rounded-full">① Abre Plin</span>
+                <span class="bg-zinc-200 text-zinc-600 text-[10px] font-bold px-3 py-1 rounded-full">② Escanea QR</span>
+                <span class="bg-zinc-200 text-zinc-600 text-[10px] font-bold px-3 py-1 rounded-full">③ Confirma</span>
+              </div>
+              <p class="text-xl font-black text-emerald-600 mb-4" id="plin-amount">S/. 0.00</p>
+              <div class="inline-block p-2 bg-white border border-zinc-200 shadow-sm mb-3">
+                <img id="qr-plin-img" src="" alt="QR Plin" class="w-40 h-40 mx-auto">
+              </div>
+              <p class="text-xs font-bold text-zinc-700">Número Plin: <span class="select-all text-emerald-600">988 649 63</span></p>
+              <p class="text-[10px] text-zinc-400 mt-2 leading-relaxed">Tras pagar, envía el voucher por WhatsApp.<br>Tu pedido se procesa al verificar el pago.</p>
+            </div>
+          </div>
+
+          <!-- Términos y confirmar -->
+          <div class="space-y-4">
+            <label class="flex items-start gap-3 cursor-pointer p-1">
+              <input type="checkbox" id="terms-checkbox" class="w-4 h-4 mt-0.5 accent-black rounded">
+              <span class="text-xs text-zinc-500 font-medium leading-tight select-none">Declaro estar conforme con las Políticas de Despacho y Autenticidad de las zapatillas.</span>
+            </label>
+            <button id="confirm-btn" onclick="confirmOrder()" disabled class="w-full bg-zinc-100 text-zinc-400 font-bold tracking-widest text-xs uppercase py-4 transition-all duration-300 cursor-not-allowed shadow-sm">
+              Confirmar Pedido vía WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal éxito -->
+  <div id="success-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hide">
+    <div class="bg-white p-8 max-w-md w-full text-center border border-zinc-100 shadow-2xl">
+      <div class="w-14 h-14 rounded-full bg-zinc-50 flex items-center justify-center mx-auto mb-5 border border-zinc-100">
+        <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h4 class="text-xl font-black tracking-wider uppercase mb-3">¡SOLICITUD ENVIADA!</h4>
+      <p class="text-xs text-zinc-500 font-medium leading-relaxed mb-6">Hemos abierto tu canal de atención en WhatsApp. Envía el mensaje generado junto con tu captura de transferencia o QR para procesar tu orden y despacho inmediato.</p>
+      <button onclick="closeModal()" class="w-full bg-black text-white text-xs font-bold tracking-widest uppercase py-4 hover:bg-zinc-800 transition-colors">
+        Seguir Navegando
+      </button>
+    </div>
+  </div>
+
+  <footer class="bg-zinc-950 text-zinc-500 text-[11px] py-6 border-t border-zinc-900 font-medium tracking-wide">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-2">
+      <p>© 2026 VEGA STORE PERÚ. Todos los derechos reservados.</p>
+      <p class="uppercase text-zinc-400 font-bold tracking-wider">High Quality Global Footwear</p>
+    </div>
+  </footer>
+
+  <script>
+    const WA_NUMBER = '51988164963';
+
+    const products = {
+      nike: [
+        { id: 'n1', name: 'Nike Air Max 90 "Wolf Grey"', price: 599, image: 'https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=500&q=80', brand: 'NIKE', soldOutSizes: [38, 44] },
+        { id: 'n2', name: 'Nike Dunk Low Panda Black', price: 549, image: 'https://images.unsplash.com/photo-1612902456551-404b63716c5e?w=500&q=80', brand: 'NIKE', soldOutSizes: [40, 41] },
+        { id: 'n3', name: 'Nike Air Force 1 Essential', price: 459, image: 'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=500&q=80', brand: 'NIKE', soldOutSizes: [39, 43] }
+      ],
+      jordan: [
+        { id: 'j1', name: 'Air Jordan 1 Retro High OG', price: 899, image: 'https://images.unsplash.com/photo-1584735175315-9d5df23860e6?w=500&q=80', brand: 'JORDAN', soldOutSizes: [38, 43] },
+        { id: 'j2', name: 'Air Jordan 4 OG Cement', price: 949, image: 'https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=500&q=80', brand: 'JORDAN', soldOutSizes: [42, 44] }
+      ],
+      luxury: [
+        { id: 'l1', name: 'New Balance 550 White Blue', price: 649, image: 'https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=500&q=80', brand: 'NEW BALANCE', soldOutSizes: [38, 39, 44] },
+        { id: 'l2', name: 'Yeezy Boost 350 V2 Onyx', price: 1299, image: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&q=80', brand: 'ADIDAS', soldOutSizes: [40] }
+      ]
+    };
+
+    let currentBrand = 'nike';
+    let currentProduct = null;
+    let selectedSize = null;
+    let cart = [];
+    let activePaymentMethod = 'Transferencia';
+
+    function showView(viewName) {
+      document.querySelectorAll('section[id^="view-"]').forEach(v => v.classList.add('hide'));
+      document.getElementById('view-' + viewName).classList.remove('hide');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (viewName === 'checkout') renderCart();
+    }
+
+    function showCatalog(brand) {
+      currentBrand = brand;
+      const titles = { nike: 'COLECCIÓN NIKE', jordan: 'AIR JORDAN CO', luxury: 'EDICIONES LUXURY' };
+      document.getElementById('catalog-title').textContent = titles[brand];
+      document.getElementById('product-count').textContent = products[brand].length + ' Modelos';
+      const grid = document.getElementById('catalog-grid');
+      grid.innerHTML = products[brand].map(p => `
+        <div onclick="showProductDetail('${p.id}')" class="product-card-vega bg-white border border-zinc-200 cursor-pointer overflow-hidden p-5 flex flex-col justify-between">
+          <div class="aspect-square bg-zinc-50 flex items-center justify-center p-4 overflow-hidden mb-5">
+            <img src="${p.image}" class="max-h-[95%] max-w-[95%] object-contain mix-blend-multiply" alt="${p.name}">
+          </div>
+          <div>
+            <p class="text-[10px] font-black text-zinc-400 tracking-widest uppercase mb-1.5">${p.brand}</p>
+            <h4 class="font-bold text-sm text-zinc-900 uppercase tracking-tight truncate">${p.name}</h4>
+            <p class="text-base font-black text-black mt-2.5">S/. ${p.price.toFixed(2)}</p>
+          </div>
+        </div>
+      `).join('');
+      showView('catalog');
+    }
+
+    function showProductDetail(productId) {
+      const pool = [...products.nike, ...products.jordan, ...products.luxury];
+      currentProduct = pool.find(p => p.id === productId);
+      selectedSize = null;
+      document.getElementById('detail-image').src = currentProduct.image;
+      document.getElementById('detail-brand').textContent = currentProduct.brand;
+      document.getElementById('detail-name').textContent = currentProduct.name;
+      document.getElementById('detail-price').textContent = 'S/. ' + currentProduct.price.toFixed(2);
+      const sizes = [38, 39, 40, 41, 42, 43, 44];
+      document.getElementById('size-grid').innerHTML = sizes.map(sz => {
+        const out = currentProduct.soldOutSizes.includes(sz);
+        return `<button onclick="${out ? '' : 'selectSize(' + sz + ')'}" class="size-btn-vega py-3 border border-zinc-200 text-xs font-bold transition-all ${out ? '' : 'bg-white hover:border-black text-black'}" ${out ? 'disabled' : ''}>${sz}</button>`;
+      }).join('');
+      // FIX: estado correcto del botón al abrir detalle
+      resetAddBtn();
+      document.getElementById('size-warning').classList.add('hide');
+      showView('detail');
+    }
+
+    function resetAddBtn() {
+      const btn = document.getElementById('add-to-cart-btn');
+      btn.className = 'w-full bg-zinc-100 text-zinc-400 font-bold tracking-widest text-xs uppercase py-4 cursor-not-allowed transition-all duration-300';
+      btn.textContent = 'SELECCIONA TU TALLA';
+    }
+
+    function selectSize(sz) {
+      selectedSize = sz;
+      document.querySelectorAll('.size-btn-vega').forEach(b => {
+        b.classList.remove('selected');
+        if (parseInt(b.textContent) === sz) b.classList.add('selected');
+      });
+      document.getElementById('size-warning').classList.add('hide');
+      const btn = document.getElementById('add-to-cart-btn');
+      btn.className = 'w-full bg-black text-white font-bold tracking-widest text-xs uppercase py-4 hover:bg-zinc-800 transition-colors cursor-pointer shadow-sm';
+      btn.textContent = 'AÑADIR AL CARRITO';
+    }
+
+    function addToCart() {
+      // FIX: mostrar warning si no hay talla seleccionada
+      if (!selectedSize) {
+        document.getElementById('size-warning').classList.remove('hide');
+        return;
+      }
+      const match = cart.find(i => i.product.id === currentProduct.id && i.size === selectedSize);
+      if (match) match.quantity++; else cart.push({ product: currentProduct, size: selectedSize, quantity: 1 });
+      updateCartState();
+      showView('checkout');
+    }
+
+    function removeItem(idx) {
+      cart.splice(idx, 1);
+      updateCartState();
+      renderCart();
+    }
+
+    function updateCartState() {
+      const totalItems = cart.reduce((acc, i) => acc + i.quantity, 0);
+      const badge = document.getElementById('cart-count');
+      badge.textContent = totalItems;
+      badge.classList.toggle('hide', totalItems === 0);
+    }
+
+    function getCartTotal() {
+      return cart.reduce((sum, i) => sum + (i.product.price * i.quantity), 0);
+    }
+
+    // FIX: genera la URL del QR con monto real del carrito
+    function buildQRUrl(method, total) {
+      const data = method.toUpperCase() + ':988164963:' + total.toFixed(2) + ':VEGA+STORE';
+      return 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data=' + encodeURIComponent(data);
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      const empty = document.getElementById('cart-empty');
+      if (cart.length === 0) {
+        container.innerHTML = '';
+        empty.classList.remove('hide');
+        document.getElementById('subtotal').textContent = 'S/. 0.00';
+        document.getElementById('total').textContent = 'S/. 0.00';
+        checkSubmitStatus();
+        return;
+      }
+      empty.classList.add('hide');
+      container.innerHTML = cart.map((item, i) => `
+        <div class="flex gap-4 py-5 items-center">
+          <img src="${item.product.image}" class="w-16 h-16 object-contain bg-zinc-50 border border-zinc-100 p-1.5 shadow-sm">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-xs font-bold text-zinc-900 uppercase truncate">${item.product.name}</h4>
+            <p class="text-[11px] text-zinc-400 font-medium mt-0.5">Talla: ${item.size} US | Cantidad: ${item.quantity}</p>
+            <p class="text-xs font-black text-black mt-1">S/. ${(item.product.price * item.quantity).toFixed(2)}</p>
+          </div>
+          <button onclick="removeItem(${i})" class="text-zinc-300 hover:text-black p-2 transition-colors">✕</button>
+        </div>
+      `).join('');
+      const netTotal = getCartTotal();
+      document.getElementById('subtotal').textContent = 'S/. ' + netTotal.toFixed(2);
+      document.getElementById('total').textContent = 'S/. ' + netTotal.toFixed(2);
+      // Actualizar montos y QR en paneles de pago
+      updatePaymentPanels();
+      checkSubmitStatus();
+    }
+
+    // FIX: actualiza montos y regenera QR cuando cambia el carrito
+    function updatePaymentPanels() {
+      const total = getCartTotal();
+      document.getElementById('yape-amount').textContent = 'S/. ' + total.toFixed(2);
+      document.getElementById('plin-amount').textContent = 'S/. ' + total.toFixed(2);
+      document.getElementById('qr-yape-img').src = buildQRUrl('yape', total);
+      document.getElementById('qr-plin-img').src = buildQRUrl('plin', total);
+    }
+
+    function switchPaymentTab(method) {
+      document.querySelectorAll('.tab-pay').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + method).classList.add('active');
+      ['transfer', 'yape', 'plin'].forEach(m => document.getElementById('payment-' + m).classList.add('hide'));
+      document.getElementById('payment-' + method).classList.remove('hide');
+      const mapping = { transfer: 'Transferencia', yape: 'Yape', plin: 'Plin' };
+      activePaymentMethod = mapping[method];
+    }
+
+    document.getElementById('terms-checkbox').addEventListener('change', checkSubmitStatus);
+    document.getElementById('customer-name').addEventListener('input', checkSubmitStatus);
+    document.getElementById('customer-phone').addEventListener('input', checkSubmitStatus);
+    document.getElementById('customer-address').addEventListener('input', checkSubmitStatus);
+
+    function checkSubmitStatus() {
+      const name = document.getElementById('customer-name').value.trim();
+      const phone = document.getElementById('customer-phone').value.trim();
+      const addr = document.getElementById('customer-address').value.trim();
+      const agreed = document.getElementById('terms-checkbox').checked;
+      const allowed = cart.length > 0 && agreed && name && phone && addr;
+      const btn = document.getElementById('confirm-btn');
+      if (allowed) {
+        btn.disabled = false;
+        btn.className = 'w-full bg-black text-white font-bold tracking-widest text-xs uppercase py-4 hover:bg-zinc-800 transition-all cursor-pointer shadow-md';
+      } else {
+        btn.disabled = true;
+        btn.className = 'w-full bg-zinc-100 text-zinc-400 font-bold tracking-widest text-xs uppercase py-4 cursor-not-allowed shadow-sm';
+      }
+    }
+
+    // FIX: mensaje WhatsApp más claro con método de pago, ítems y total
+    function confirmOrder() {
+      const name = document.getElementById('customer-name').value.trim();
+      const phone = document.getElementById('customer-phone').value.trim();
+      const addr = document.getElementById('customer-address').value.trim();
+      if (!name || !phone || !addr) return;
+      const total = getCartTotal();
+      const itemsList = cart.map(i => '• ' + i.product.name + ' — Talla: ' + i.size + ' US — Cant: ' + i.quantity + ' — S/. ' + (i.product.price * i.quantity).toFixed(2)).join('%0A');
+      const ticket = Math.floor(100000 + Math.random() * 900000);
+      const waText = '%C2%A1Hola VEGA STORE!%20%F0%9F%91%8B%0A'
+        + 'Nueva solicitud desde la web.%0A%0A'
+        + '%F0%9F%93%9D%20*C%C3%93D.%20ORDEN:*%20%23VS-' + ticket + '%0A'
+        + '%F0%9F%91%A4%20*CLIENTE:*%20' + encodeURIComponent(name) + '%0A'
+        + '%F0%9F%93%9E%20*CONTACTO:*%20' + encodeURIComponent(phone) + '%0A'
+        + '%F0%9F%93%8D%20*DIRECCI%C3%93N:*%20' + encodeURIComponent(addr) + '%0A%0A'
+        + '%F0%9F%91%9F%20*ART%C3%8DCULOS:*%0A' + itemsList + '%0A%0A'
+        + '%F0%9F%92%B3%20*PAGO:*%20' + encodeURIComponent(activePaymentMethod) + '%0A'
+        + '%F0%9F%92%B0%20*TOTAL:*%20S%2F.%20' + total.toFixed(2) + '%0A%0A'
+        + 'Adjunto comprobante de pago para despacho express.%20%F0%9F%9A%80';
+      window.open('https://api.whatsapp.com/send?phone=' + WA_NUMBER + '&text=' + waText, '_blank');
+      document.getElementById('success-modal').classList.remove('hide');
+    }
+
+    function closeModal() {
+      document.getElementById('success-modal').classList.add('hide');
+      cart = [];
+      updateCartState();
+      document.getElementById('customer-name').value = '';
+      document.getElementById('customer-phone').value = '';
+      document.getElementById('customer-address').value = '';
+      document.getElementById('terms-checkbox').checked = false;
+      checkSubmitStatus();
+      showView('home');
+    }
+  </script>
+</body>
+</html>
